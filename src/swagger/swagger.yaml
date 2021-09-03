@@ -1,0 +1,924 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Upgrade Journey
+tags:
+  - name: 3rd Party API
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /swagger:
+    x-swagger-pipe: swagger_raw
+  /tmf-api/agreementManagement/v4/agreement/{msisdn}:
+    get:
+      tags:
+        - Plan Details
+      summary: Current Contract summary
+      operationId: getPlanDetails
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: msisdn
+          required: true
+          type: string
+          description: Msisdn of account.
+      responses:
+        200:
+          description: Plan Details retrieved successfully.
+          schema:
+            $ref: "#/definitions/PlanDetails-Model"
+        400:
+          description: Missing required input parameter.
+        404:
+          description: No Data found.
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure.
+        500:
+          description: Technical error occured, service failure.
+          
+  /tmf-api/productOfferingQualification/v4/{msisdn}:
+    get:
+      tags:
+        - Eligibility Check
+      summary: Returns eligible
+      operationId: getUpgradeEligible
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: msisdn
+          required: true
+          type: string
+          description: Customer MSISDN is input.
+      responses:
+        200:
+          description: Eligibility Check retrieved successfully.
+          schema:
+            $ref: "#/definitions/EligibilityCheck-Model"
+        400:
+          description: Missing required input parameter.
+        404:
+          description: No Data found.
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure.
+        500:
+          description: Technical error occured, service failure. 
+          
+  /tmf-api/usageManagement/v4/usage/consumptions:
+    get:
+      tags:
+        - Consumption Usage
+    
+      description: Gets the customers consumption
+      operationId: getConsumptionInfo
+      parameters:
+        - name: msisdn
+          in: query
+          type: string
+          required: true
+          description: The msisdn to retrieve the customers consumption
+      responses:
+        200:
+          description: The customers consumption was successfully returned
+          schema:
+            $ref: "#/definitions/Consumption-Usage"
+        "400":
+          description: Missing required input parameter
+        "424":
+          description: Upstream call failed with a 500. Response will be identical to upstream failure
+        "500":
+          description: Technical error occured, service failure.        
+          
+  /tmf-api/productCatalogManagement/v4/productSpecification:
+    get:
+      tags:
+        - "Devices"
+      operationId: getDeviceModels
+      summary: Returns all device models for a manufacturer
+      consumes:
+        - application/json
+      parameters:
+        - in: "query"
+          name: brandName
+          type: array
+          items:
+            type: string
+          required: false
+      responses:
+        200:
+          description: All device models retrieved successfully
+          schema:
+            $ref: "#/definitions/DeviceModel-Model"
+        400:
+          description: Missing required input parameter
+        404:
+          description: No device models found
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure
+        500:
+          description: Technical error occured, service failure   
+          
+  /tmf-api/productCatalogManagement/v4/category/brandNames:
+    get:
+      tags:
+        - Devices
+      summary: Returns a list of manufacturers
+      operationId: getManufacturerList
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: List of manufacturers retrieved successfully.
+          schema:
+            $ref: '#/definitions/ManufacturerList-Model'
+        400:
+          description: Missing required input parameter.
+        404:
+          description: No manufactures found.
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure.
+        500:
+          description: Technical error occured, service failure.
+          
+  /tmf-api/party/v4/individual/validate:
+    get:
+      tags:
+        - "Call Prevetting"
+      operationId: callPreVetting
+      consumes:
+        - application/json
+      parameters:
+        - in: query
+          name: idNumber
+          type: string
+          required: true
+        - in: query
+          name: idType
+          type: string
+          required: true
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CallPrevetting-Model"
+        400:
+          description: Missing required input parameter
+        401:
+          description: Not authorized
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure
+        500:
+          description: Technical error occured, service failure.   
+          
+  /public-services/shopping/recommended/deals:
+    get:
+      tags:
+        - "Deals"
+      operationId: getAllRecommendedDeals
+      consumes:
+        - application/json
+      parameters:
+        - name: accessory
+          in: query
+          description: accessory
+          required: false
+          type: string
+        - name: accountDealFlag
+          in: query
+          description: accountDealFlag
+          required: false
+          type: string
+        - name: channel
+          in: query
+          description: channel
+          required: false
+          type: string
+        - name: dealValueLowerLimit
+          in: query
+          description: dealValueLowerLimit
+          required: false
+          type: string
+        - name: dealValueUpperLimit
+          in: query
+          description: dealValueUpperLimit
+          required: false
+          type: string
+        - name: dealerGroup
+          in: query
+          description: dealerGroup
+          required: false
+          type: string
+        - name: dealerId
+          in: query
+          description: dealerId
+          required: false
+          type: string
+        - name: dealsheetNumber
+          in: query
+          description: dealsheetNumber
+          required: false
+          type: string
+        - name: device
+          in: query
+          description: device
+          required: false
+          type: string
+        - name: deviceManufacturer
+          in: query
+          description: deviceManufacturer
+          required: false
+          type: string
+        - name: deviceType
+          in: query
+          description: deviceType
+          required: false
+          type: string
+        - name: duration
+          in: query
+          description: duration
+          required: false
+          type: string
+        - name: financedThresholdAmount
+          in: query
+          description: financedThresholdAmount
+          required: false
+          type: string
+        - name: interactSessionId
+          in: query
+          description: interactSessionId
+          required: false
+          type: string
+        - name: msisdn
+          in: query
+          description: msisdn
+          required: true
+          type: string
+        - name: pricePlan
+          in: query
+          description: pricePlan
+          required: false
+          type: string
+        - name: rowEnd
+          in: query
+          description: rowEnd
+          required: false
+          type: string
+        - name: rowStart
+          in: query
+          description: rowStart
+          required: false
+          type: string
+        - name: simOnly
+          in: query
+          description: simOnly
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: sortBy
+          required: false
+          type: string
+        - name: stockCode
+          in: query
+          description: stockCode
+          required: false
+          type: string
+        - name: subChannel
+          in: query
+          description: subChannel
+          required: false
+          type: string
+        - name: tariffLimit
+          in: query
+          description: tariffLimit
+          required: false
+          type: string
+        - name: tariffLowerLimit
+          in: query
+          description: tariffLowerLimit
+          required: false
+          type: string
+        - name: originID
+          in: header
+          description: originID
+          required: true
+          type: string
+        - name: thirdParty
+          in: query
+          description: thirdParty
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/RecommendedDeals"
+        400:
+          description: Missing required input parameter
+        401:
+          description: Not authorized
+        404:
+          description: No recommended deals found
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure
+        500:
+          description: Technical error occured, service failure. 
+          
+  /public-services/shopping/deals/dealers/product-offering:
+    get:
+      tags:
+        - "Product Offering"
+      operationId: getDealersProductOffering
+      consumes:
+        - application/json
+      parameters:
+        - in: query
+          name: accessory
+          type: string
+          required: false
+        - in: query
+          name: accountDealFlag
+          type: string
+          required: false
+        - in: query
+          name: dealType
+          type: string
+          required: false
+        - in: query
+          name: dealValueUpperLimit
+          type: string
+          required: false
+        - in: query
+          name: dealerId
+          type: string
+          required: true
+        - in: query
+          name: dealsheetNumber
+          type: string
+          required: false
+        - in: query
+          name: device
+          type: string
+          required: false
+        - in: query
+          name: deviceManufacturer
+          type: string
+          required: false
+        - in: query
+          name: financedThresholdAmount
+          type: string
+          required: false
+        - in: query
+          name: packageCodes
+          type: string
+          required: false
+        - in: query
+          name: pricePlan
+          type: string
+          required: false
+        - in: query
+          name: simOnly
+          type: string
+          required: false
+        - in: query
+          name: stockCode
+          type: string
+          required: false
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/DealersProductOffering"
+        400:
+          description: Missing required input parameter
+        401:
+          description: Not authorized
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure
+        500:
+          description: Technical error occured, service failure.      
+
+# complex objects have schema definitions
+definitions:
+
+# Get PlanDetails
+  PlanDetails-Model:
+    type: object
+    properties:
+      agreementItem:
+        type: array
+        items:
+          type: object
+          properties:
+            product:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                     type: string
+            termOrCondition:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  validFor:
+                    type: object
+                    properties:
+                      endDateTime:
+                        type: string
+                      startDateTime:
+                        type: string
+      characteristic:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+              
+        # Get EligibilityCheck
+  EligibilityCheck-Model:
+    type: object
+    properties:
+      productOfferingQualificationDate:
+        type: string
+      qualificationResult:
+        type: string
+      productOfferingQualificationItem:
+        type: array
+        items:
+          type: object
+          properties:
+            eligibilityUnavailabilityReason:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+            note:
+              type: array
+              items:
+                type: object
+                properties:
+                  text:
+                    type: string
+            product:
+              type: object
+              properties:
+                productCharacteristic:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      value:
+                        type: string
+      relatedParty:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string    
+              
+       # Get Device Models
+  DeviceModel-Model:
+    type: object
+    properties:
+      brand:
+        type: string
+      description:
+        type: string
+      productSpecCharacteristic:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            valueType:
+              type: string
+            productSpecCharacteristicValue:
+              type: object
+              properties:
+                value:
+                  type: string    
+                  
+    # Get Manufacturer List
+  ManufacturerList-Model:
+    type: object
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      subCategory:
+        type: array
+        items:
+          type: string
+   
+   # Get Call Prevetting               
+  CallPrevetting-Model:
+    type: object
+    properties:
+      partyCharacteristic:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string            
+   
+    # Get Consumption Usage
+  Consumption-Usage:
+    type: object
+    properties:
+       usageCharacteristic:
+            type: array
+            items:
+              type: string    
+              
+  RecommendedDeals:
+    type: object
+    properties:
+      messages:
+        type: array
+        items:
+          type: string
+      results:
+        type: object
+        properties:
+          deals:
+            type: array
+            items:
+              $ref: "#/definitions/DealModel"
+          mah:
+            type: boolean
+          preSelectedDeal:
+            type: boolean
+          preSelectedDealModel:
+            $ref: "#/definitions/DealModel"
+      succesful:
+        type: boolean
+      code:
+        type: integer
+    title: RecommendedDeals
+
+  DealDetailComponentModel:
+    type: object
+    properties:
+      dealsheetNumber:
+        type: string
+      eppixProductCode:
+        type: string
+      image:
+        type: string
+      nostock:
+        type: boolean
+      price:
+        type: number
+        format: double
+      productCode:
+        type: string
+      productDesc:
+        type: string
+      productType:
+        type: string
+      promotionId:
+        type: string
+    title: DealDetailComponentModel
+
+  DealModel:
+    type: object
+    properties:
+      channel:
+        type: string
+      cvmCampaignId:
+        type: string
+      dealComponents:
+        type: array
+        items:
+          $ref: "#/definitions/DealDetailComponentModel"
+      dealId:
+        type: integer
+        format: int64
+      dealShortDescription:
+        type: string
+      dealsheet:
+        $ref: "#/definitions/Dealsheet"
+      dealsheetNumber:
+        type: string
+      deviceColor:
+        type: string
+      deviceId:
+        type: integer
+        format: int64
+      deviceMemSize:
+        type: string
+      deviceModel:
+        type: string
+      extraDataIncluded:
+        type: integer
+        format: int32
+      imageSrc:
+        type: string
+      imageUrl:
+        type: string
+      iotSubPrice:
+        type: number
+        format: double
+      links:
+        type: array
+        xml:
+          name: link
+          namespace: "http://www.w3.org/2005/Atom"
+          attribute: false
+          wrapped: false
+        items:
+          $ref: "#/definitions/Link"
+      message:
+        type: string
+      monthlyHandsetFee:
+        type: number
+        format: double
+      monthlySubscriptionFee:
+        type: number
+        format: double
+      overrideDataIncluded:
+        type: integer
+        format: int32
+      overrideDeviceName:
+        type: string
+      packageDetail:
+        $ref: "#/definitions/PackageModel"
+      paymentTerms:
+        type: integer
+        format: int32
+      previousPrice:
+        type: number
+        format: double
+      priorityOverall:
+        type: integer
+        format: int32
+      seoUrl:
+        type: string
+      special:
+        type: boolean
+      specialDeal:
+        $ref: "#/definitions/SpecialDeal"
+      totalMonthlySubscription:
+        type: number
+        format: double
+    title: DealModel
+  SpecialDeal:
+    type: object
+    properties:
+      colourCode:
+        type: string
+      specialName:
+        type: string
+    title: SpecialDeal
+
+  Dealsheet:
+    type: object
+    properties:
+      additionalData:
+        type: number
+      airTime:
+        type: number
+      cashPayIn:
+        type: number
+      commissionRating:
+        type: number
+      contractMonths:
+        type: number
+      dataAllocation:
+        type: number
+      dealDescription:
+        type: string
+      dealType:
+        type: string
+      dealValue:
+        type: number
+      dealsheetNumber:
+        type: string
+      device:
+        type: string
+      deviceManufacturer:
+        type: string
+      deviceTypeSubGroup:
+        type: string
+      handset:
+        type: string
+      handsetInstallment:
+        type: number
+      interactSessionId:
+        type: string
+      interactTreatmentCode:
+        type: string
+      multiLineFlag:
+        type: string
+      nonRemovableVas:
+        type: array
+        items:
+          $ref: "#/definitions/NonRemovableVas"
+      paymentMethod:
+        type: string
+      pricePlan:
+        type: string
+      rowNum:
+        type: number
+      smsAllocation:
+        type: number
+      stockCode:
+        type: string
+      subscriptionValue:
+        type: number
+      tariffCode:
+        type: string
+      tariffDescription:
+        type: string
+      vasProductCode:
+        type: string
+      vasProductName:
+        type: string
+      voiceAllocation:
+        type: number
+    title: Dealsheet
+
+  Link:
+    type: object
+    properties:
+      href:
+        type: string
+        xml:
+          name: href
+          attribute: true
+          wrapped: false
+      rel:
+        type: string
+        xml:
+          name: rel
+          attribute: true
+          wrapped: false
+      templated:
+        type: boolean
+    title: Link
+
+  NonRemovableVas:
+    type: object
+    properties:
+      nrvAdditionalCommissionRating:
+        type: number
+        format: double
+      nrvAmount:
+        type: number
+        format: double
+      nrvCode:
+        type: string
+      nrvDataAllocation:
+        type: number
+        format: double
+      nrvDescription:
+        type: string
+      nrvDiscount:
+        type: number
+        format: double
+      nrvEppixCode:
+        type: string
+      nrvType:
+        type: integer
+        format: int32
+      nrvVoiceAllocation:
+        type: number
+        format: double
+    title: NonRemovableVas
+  PackageModel:
+    type: object
+    properties:
+      contractType:
+        type: string
+        enum:
+          - OPEN
+          - TOPUP_MINUTES
+          - TOPUP_AIRTIME
+      displayTheme:
+        type: string
+      includedData:
+        type: integer
+        format: int32
+      includedMinutes:
+        type: integer
+        format: int32
+      includedSms:
+        type: integer
+        format: int32
+      links:
+        type: array
+        xml:
+          name: link
+          namespace: "http://www.w3.org/2005/Atom"
+          attribute: false
+          wrapped: false
+        items:
+          $ref: "#/definitions/Link"
+      originalPackageCode:
+        type: string
+      packageDescription:
+        type: string
+      packageId:
+        type: integer
+        format: int64
+      packageTypeId:
+        type: integer
+        format: int32
+      packageTypeName:
+        type: string
+    title: PackageModel  
+          
+  DealersProductOffering:
+    type: object
+    properties:
+      messages:
+        type: array
+        items:
+          type: string
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            dealsheetNumber:
+              type: string
+            dealDescription:
+              type: string
+            dealType:
+              type: string
+            numberOfAccessory:
+              type: string
+            packageCode:
+              type: string
+            pricePlan:
+              type: string
+            tarriffDescription:
+              type: string
+            addDate:
+              type: string
+            fromDate:
+              type: string
+            toDate:
+              type: string
+            contractMonths:
+              type: number
+            numberOfPhones:
+              type: number
+            financedHandset:
+              type: string
+            stockCode:
+              type: string
+            device:
+              type: string
+            secondaryProductCode:
+              type: number
+            handsetInstallment:
+              type: number
+            subscriptionValue:
+              type: number
+            dealValue:
+              type: number
+            groupId:
+              type: string
+            channel:
+              type: string
+            cashPayIn:
+              type: number
+      successful:
+          type: string
+      code:
+          type: number        
+          
+          
+              
